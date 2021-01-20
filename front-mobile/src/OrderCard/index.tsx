@@ -1,21 +1,51 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Header from '../header';
+import Header from '../Header';
+import { Order } from '../types';
+import dayjs from 'dayjs';
+import 'dayjs/locale/pt-br';
+import relativeTime from 'dayjs/plugin/relativeTime'
+import NumberFormat from 'react-number-format';
 
+dayjs.locale('pt-br');
+dayjs.extend(relativeTime);
 
-export default function OrderCard() {
+type Props = {
+    order: Order;
+}
+
+function dateFromNow(date:string){
+    return dayjs(date).fromNow();
+}
+
+export function ReactNativeNumberFormat( {order} : Props ) {
+    return (
+      <NumberFormat
+        value={order.total}
+        displayType={'text'}
+        thousandSeparator={'.'}
+        decimalSeparator={','}
+        decimalScale={2}
+        fixedDecimalScale={true}
+        prefix={'R$ '}
+        renderText={formattedValue => <Text style={styles.orderPrice}>{formattedValue}</Text>} 
+      />
+    );
+  }
+
+export default function OrderCard({order}: Props) {
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.orderName}> Pedido 1 </Text>
-                <Text style={styles.orderPrice}> R$ 90,00 </Text>
+                <Text style={styles.orderName}> Pedido {order.id} </Text>
+                <ReactNativeNumberFormat order={order} />
             </View>
-            <Text style={styles.text}>Há 30 min</Text>
+            <Text style={styles.text}>{dateFromNow(order.moment)}</Text>
             <View style={styles.productsList}>
-                <Text style={styles.text}>Pizza Calabresa</Text>
-                <Text style={styles.text}>Pizza Quatro Queijos</Text>
-                <Text style={styles.text}>Pizza Marguerita</Text>
+                {order.products.map(product => (
+                    <Text key={product.id} style={styles.text}>{product.name}</Text>
+                ))}
             </View>
         </View>
     );

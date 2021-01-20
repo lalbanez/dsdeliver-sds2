@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
-import Header from '../header';
+import Header from '../Header';
 
 export default function Home() {
     const navigation = useNavigation();
